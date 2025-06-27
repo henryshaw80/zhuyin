@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn Zhuyin Bopomofo (注音符號) with interactive flashcards. Master all 37 Taiwanese Mandarin phonetic symbols with pronunciation guides.">
+    <meta name="keywords" content="Zhuyin, Bopomofo, 注音符號, Mandarin, Chinese, Taiwan, pronunciation, flashcards, learning">
+    <meta name="author" content="Zhuyin Learning App">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://your-username.github.io/zhuyin-flashcards/">
+    <meta property="og:title" content="Zhuyin Bopomofo Flashcards - Interactive Learning">
+    <meta property="og:description" content="Learn Zhuyin Bopomofo (注音符號) with interactive flashcards. Master all 37 Taiwanese Mandarin phonetic symbols.">
+    <meta property="og:image" content="https://your-username.github.io/zhuyin-flashcards/preview.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://your-username.github.io/zhuyin-flashcards/">
+    <meta property="twitter:title" content="Zhuyin Bopomofo Flashcards - Interactive Learning">
+    <meta property="twitter:description" content="Learn Zhuyin Bopomofo (注音符號) with interactive flashcards. Master all 37 Taiwanese Mandarin phonetic symbols.">
+    <meta property="twitter:image" content="https://your-username.github.io/zhuyin-flashcards/preview.png">
+
+    <title>Zhuyin Bopomofo Flashcards (注音符號) - Learn Taiwanese Mandarin</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>ㄅ</text></svg>">
+    
+    <!-- Google Fonts for better typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #6A9BCC 0%, #5B8BB5 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .app-content {
+            width: 100%;
+            max-width: 700px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .title {
+            color: white;
+            font-size: clamp(24px, 5vw, 36px);
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .subtitle {
+            color: rgba(255,255,255,0.9);
+            font-size: clamp(14px, 3vw, 16px);
+            margin-bottom: 20px;
+        }
+        
+        .filter-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        
+        .tabs-container {
+            background: rgba(255,255,255,0.2);
+            padding: 4px;
+            border-radius: 50px;
+            display: inline-flex;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .tab-button {
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: none;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: transparent;
+            color: white;
+        }
+        
+        .tab-button.active {
+            background: white;
+            color: #374151;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .tab-button:hover:not(.active) {
+            color: rgba(255,255,255,0.9);
+        }
+        
+        .card-container {
+            perspective: 1000px;
+            margin-bottom: 40px;
+        }
+        
+        .flashcard {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+        
+        .flashcard.flipped {
+            transform: rotateX(180deg);
+        }
+        
+        .flashcard.animating {
+            transform: scale(0.95);
+            opacity: 0;
+        }
+        
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 24px;
+            background: white;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .card-back {
+            transform: rotateX(180deg);
+        }
+        
+        .zhuyin-symbol {
+            font-family: 'Noto Sans TC', serif;
+            font-size: clamp(80px, 15vw, 120px);
+            font-weight: 500;
+            color: #1F2937;
+            line-height: 1;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .pronunciation {
+            color: #374151;
+            font-size: clamp(18px, 4vw, 22px);
+            line-height: 1.6;
+            text-align: center;
+            white-space: pre-line;
+            font-weight: 500;
+        }
+        
+        .flip-instruction {
+            color: #9CA3AF;
+            margin-top: auto;
+            font-size: 14px;
+            text-align: center;
+        }
+        
+        .navigation {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .nav-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .nav-button:hover:not(:disabled) {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
+        
+        .nav-button:disabled {
+            background: rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.5);
+            cursor: not-allowed;
+        }
+        
+        .progress {
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .footer {
+            text-align: center;
+        }
+        
+        .keyboard-hint {
+            color: rgba(255,255,255,0.7);
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        
+        .github-link {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            font-size: 13px;
+            transition: color 0.3s ease;
+        }
+        
+        .github-link:hover {
+            color: white;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Mobile optimizations */
+        @media (max-width: 640px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .card-face {
+                padding: 30px 20px;
+            }
+            
+            .navigation {
+                gap: 20px;
+            }
+            
+            .tab-button {
+                padding: 8px 16px;
+                font-size: 13px;
+            }
+        }
+        
+        /* High DPI displays */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .zhuyin-symbol {
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+        }
+        
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            .card-face {
+                background: #1F2937;
+                color: white;
+                border-color: rgba(255,255,255,0.1);
+            }
+            
+            .zhuyin-symbol {
+                color: white;
+            }
+            
+            .pronunciation {
+                color: #E5E7EB;
+            }
+            
+            .flip-instruction {
+                color: #9CA3AF;
+            }
+        }
+        
+        /* Accessibility improvements */
+        @media (prefers-reduced-motion: reduce) {
+            .flashcard {
+                transition: none;
+            }
+            
+            .nav-button {
+                transition: none;
+            }
+            
+            .app-content {
+                animation: none;
+            }
+        }
+        
+        /* Focus styles for accessibility */
+        .tab-button:focus,
+        .nav-button:focus,
+        .flashcard:focus {
+            outline: 2px solid white;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="app-content">
+            <div class="header">
+                <h1 class="title">Zhuyin Bopomofo</h1>
+                <p class="subtitle">注音符號 - Learn Taiwanese Mandarin Phonetics</p>
+                
+                <div class="filter-tabs">
+                    <div class="tabs-container">
+                        <button class="tab-button active" data-filter="all">All (37)</button>
+                        <button class="tab-button" data-filter="initials">Initials (21)</button>
+                        <button class="tab-button" data-filter="finals">Finals (16)</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card-container">
+                <div class="flashcard" tabindex="0">
+                    <div class="card-face card-front">
+                        <div class="zhuyin-symbol">ㄅ</div>
+                        <p class="flip-instruction">Click or press ↑↓ to flip</p>
+                    </div>
+                    <div class="card-face card-back">
+                        <div class="pronunciation">b (as in 'book')<br>Initial consonant</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="navigation">
+                <button class="nav-button" id="prevBtn" aria-label="Previous card">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="15,18 9,12 15,6"></polyline>
+                    </svg>
+                </button>
+                
+                <div class="progress">
+                    <span id="currentIndex">1</span> / <span id="totalCards">37</span>
+                </div>
+                
+                <button class="nav-button" id="nextBtn" aria-label="Next card">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9,18 15,12 9,6"></polyline>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="footer">
+                <p class="keyboard-hint">Use ← → arrows to navigate • ↑↓ arrows to flip</p>
+                <a href="https://github.com/your-username/zhuyin-flashcards" class="github-link">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Zhuyin flashcard data
+        const ZHUYIN_FLASHCARDS = [
+            // Initials (聲母)
+            { front: "ㄅ", back: "b (as in 'book')\nInitial consonant", category: "initials" },
+            { front: "ㄆ", back: "p (as in 'park')\nInitial consonant", category: "initials" },
+            { front: "ㄇ", back: "m (as in 'mom')\nInitial consonant", category: "initials" },
+            { front: "ㄈ", back: "f (as in 'fan')\nInitial consonant", category: "initials" },
+            { front: "ㄉ", back: "d (as in 'dog')\nInitial consonant", category: "initials" },
+            { front: "ㄊ", back: "t (as in 'top')\nInitial consonant", category: "initials" },
+            { front: "ㄋ", back: "n (as in 'no')\nInitial consonant", category: "initials" },
+            { front: "ㄌ", back: "l (as in 'love')\nInitial consonant", category: "initials" },
+            { front: "ㄍ", back: "g (as in 'go')\nInitial consonant", category: "initials" },
+            { front: "ㄎ", back: "k (as in 'key')\nInitial consonant", category: "initials" },
+            { front: "ㄏ", back: "h (as in 'house')\nInitial consonant", category: "initials" },
+            { front: "ㄐ", back: "j (as in 'jeep')\nInitial consonant", category: "initials" },
+            { front: "ㄑ", back: "q (as in 'cheese')\nInitial consonant", category: "initials" },
+            { front: "ㄒ", back: "x (as in 'she')\nInitial consonant", category: "initials" },
+            { front: "ㄓ", back: "zh (as in 'judge')\nInitial consonant", category: "initials" },
+            { front: "ㄔ", back: "ch (as in 'church')\nInitial consonant", category: "initials" },
+            { front: "ㄕ", back: "sh (as in 'shoe')\nInitial consonant", category: "initials" },
+            { front: "ㄖ", back: "r (as in 'red')\nInitial consonant", category: "initials" },
+            { front: "ㄗ", back: "z (as in 'zoo')\nInitial consonant", category: "initials" },
+            { front: "ㄘ", back: "c (as in 'cats')\nInitial consonant", category: "initials" },
+            { front: "ㄙ", back: "s (as in 'see')\nInitial consonant", category: "initials" },
+            
+            // Finals (韻母)
+            { front: "ㄚ", back: "a (as in 'car')\nFinal vowel", category: "finals" },
+            { front: "ㄛ", back: "o (as in 'more')\nFinal vowel", category: "finals" },
+            { front: "ㄜ", back: "e (as in 'her')\nFinal vowel", category: "finals" },
+            { front: "ㄝ", back: "ê (as in 'bed')\nFinal vowel", category: "finals" },
+            { front: "ㄞ", back: "ai (as in 'eye')\nFinal vowel", category: "finals" },
+            { front: "ㄟ", back: "ei (as in 'way')\nFinal vowel", category: "finals" },
+            { front: "ㄠ", back: "ao (as in 'cow')\nFinal vowel", category: "finals" },
+            { front: "ㄡ", back: "ou (as in 'go')\nFinal vowel", category: "finals" },
+            { front: "ㄢ", back: "an (as in 'can')\nFinal vowel", category: "finals" },
+            { front: "ㄣ", back: "en (as in 'pen')\nFinal vowel", category: "finals" },
+            { front: "ㄤ", back: "ang (as in 'song')\nFinal vowel", category: "finals" },
+            { front: "ㄥ", back: "eng (as in 'sung')\nFinal vowel", category: "finals" },
+            { front: "ㄦ", back: "er (as in 'her')\nFinal vowel", category: "finals" },
+            { front: "ㄧ", back: "i (as in 'see')\nFinal vowel", category: "finals" },
+            { front: "ㄨ", back: "u (as in 'food')\nFinal vowel", category: "finals" },
+            { front: "ㄩ", back: "ü (as in 'über')\nFinal vowel", category: "finals" }
+        ];
+
+        // App state
+        let currentFilter = 'all';
+        let currentIndex = 0;
+        let isFlipped = false;
+        let isAnimating = false;
+
+        // DOM elements
+        const flashcard = document.querySelector('.flashcard');
+        const symbolElement = document.querySelector('.zhuyin-symbol');
+        const pronunciationElement = document.querySelector('.pronunciation');
+        const currentIndexElement = document.getElementById('currentIndex');
+        const totalCardsElement = document.getElementById('totalCards');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const tabButtons = document.querySelectorAll('.tab-button');
+
+        // Filter flashcards based on current filter
+        function getFilteredCards() {
+            if (currentFilter === 'all') return ZHUYIN_FLASHCARDS;
+            return ZHUYIN_FLASHCARDS.filter(card => card.category === currentFilter);
+        }
+
+        // Update card display
+        function updateCard() {
+            if (isAnimating) return;
+            
+            const filteredCards = getFilteredCards();
+            const card = filteredCards[currentIndex];
+            
+            if (!card) return;
+            
+            symbolElement.textContent = card.front;
+            pronunciationElement.textContent = card.back;
+            
+            // Update navigation
+            currentIndexElement.textContent = currentIndex + 1;
+            totalCardsElement.textContent = filteredCards.length;
+            
+            prevBtn.disabled = currentIndex === 0;
+            nextBtn.disabled = currentIndex === filteredCards.length - 1;
+            
+            // Reset flip state
+            isFlipped = false;
+            flashcard.classList.remove('flipped');
+        }
+
+        // Handle card flip
+        function flipCard() {
+            if (isAnimating) return;
+            
+            isFlipped = !isFlipped;
+            flashcard.classList.toggle('flipped', isFlipped);
+        }
+
+        // Navigate to previous card
+        function previousCard() {
+            if (currentIndex > 0 && !isAnimating) {
+                animateTransition(() => {
+                    currentIndex--;
+                    updateCard();
+                });
+            }
+        }
+
+        // Navigate to next card
+        function nextCard() {
+            const filteredCards = getFilteredCards();
+            if (currentIndex < filteredCards.length - 1 && !isAnimating) {
+                animateTransition(() => {
+                    currentIndex++;
+                    updateCard();
+                });
+            }
+        }
+
+        // Smooth transition animation
+        function animateTransition(callback) {
+            isAnimating = true;
+            flashcard.classList.add('animating');
+            
+            setTimeout(() => {
+                callback();
+                setTimeout(() => {
+                    flashcard.classList.remove('animating');
+                    isAnimating = false;
+                }, 50);
+            }, 150);
+        }
+
+        // Handle filter change
+        function changeFilter(newFilter) {
+            if (newFilter === currentFilter) return;
+            
+            currentFilter = newFilter;
+            currentIndex = 0;
+            
+            // Update active tab
+            tabButtons.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.filter === newFilter);
+            });
+            
+            updateCard();
+        }
+
+        // Keyboard navigation
+        function handleKeyPress(event) {
+            switch(event.key) {
+                case 'ArrowLeft':
+                    event.preventDefault();
+                    previousCard();
+                    break;
+                case 'ArrowRight':
+                    event.preventDefault();
+                    nextCard();
+                    break;
+                case 'ArrowUp':
+                case 'ArrowDown':
+                    event.preventDefault();
+                    flipCard();
+                    break;
+                case ' ':
+                    event.preventDefault();
+                    flipCard();
+                    break;
+            }
+        }
+
+        // Event listeners
+        flashcard.addEventListener('click', flipCard);
+        flashcard.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                flipCard();
+            }
+        });
+
+        prevBtn.addEventListener('click', previousCard);
+        nextBtn.addEventListener('click', nextCard);
+
+        tabButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                changeFilter(btn.dataset.filter);
+            });
+        });
+
+        document.addEventListener('keydown', handleKeyPress);
+
+        // Initialize app
+        updateCard();
+
+        // Analytics (optional - replace with your tracking)
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'page_view', {
+                page_title: 'Zhuyin Bopomofo Flashcards',
+                page_location: window.location.href
+            });
+        }
+
+        // Service Worker for offline support (optional)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => console.log('SW registered'))
+                    .catch(error => console.log('SW registration failed'));
+            });
+        }
+    </script>
+
+    <!-- Schema.org structured data for SEO -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Zhuyin Bopomofo Flashcards",
+        "description": "Interactive flashcards for learning Zhuyin Bopomofo (注音符號), the phonetic system used in Taiwan for Mandarin Chinese.",
+        "url": "https://your-username.github.io/zhuyin-flashcards/",
+        "applicationCategory": "EducationalApplication",
+        "operatingSystem": "Web Browser",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "author": {
+            "@type": "Person",
+            "name": "Your Name"
+        },
+        "educationalLevel": "Beginner to Intermediate",
+        "learningResourceType": "Interactive Tool",
+        "inLanguage": ["en", "zh-TW"],
+        "about": {
+            "@type": "Thing",
+            "name": "Zhuyin Bopomofo",
+            "description": "Phonetic system for Mandarin Chinese used in Taiwan"
+        }
+    }
+    </script>
+</body>
+</html>
