@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Learn Zhuyin Bopomofo (注音符號) with interactive flashcards.">
-    <meta name="keywords" content="Zhuyin, Bopomofo, 注音符號, Mandarin, Chinese, Taiwan, pronunciation, flashcards, learning">
+    <meta name="description" content="Learn Zhuyin Bopomofo (注音符號) with interactive flashcards. Master all 37 Mandarin phonetic symbols with pronunciation guides.">
+    <meta name="keywords" content="Zhuyin, Bopomofo, 注音符號, Mandarin, Chinese, pronunciation, flashcards, learning">
     <meta name="author" content="Zhuyin Learning App">
     
     <!-- Open Graph / Facebook -->
@@ -12,14 +12,14 @@
     <meta property="og:url" content="https://your-username.github.io/zhuyin-flashcards/">
     <meta property="og:title" content="Zhuyin Bopomofo Flashcards - Interactive Learning">
     <meta property="og:description" content="Learn Zhuyin Bopomofo (注音符號) with interactive flashcards.">
-    <meta property="og:image" content="https://your-username.github.io/zhuyin-flashcards/preview.png">
+    <meta property="og:image" content="https://henryshaw80.github.io/zhuyin/preview.png">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://your-username.github.io/zhuyin-flashcards/">
     <meta property="twitter:title" content="Zhuyin Bopomofo Flashcards - Interactive Learning">
     <meta property="twitter:description" content="Learn Zhuyin Bopomofo (注音符號) with interactive flashcards.">
-    <meta property="twitter:image" content="https://your-username.github.io/zhuyin-flashcards/preview.png">
+    <meta property="twitter:image" content="https://henryshaw80.github.io/zhuyin/preview.png">
 
     <title>Zhuyin Bopomofo Flashcards (注音符號)</title>
     
@@ -335,7 +335,7 @@
         <div class="app-content">
             <div class="header">
                 <h1 class="title">Zhuyin Bopomofo</h1>
-                <p class="subtitle">注音符號 - Learn Taiwanese Mandarin Phonetics</p>
+                <p class="subtitle">注音符號 - Learn Mandarin Phonetics</p>
                 
                 <div class="filter-tabs">
                     <div class="tabs-container">
@@ -378,7 +378,6 @@
             
             <div class="footer">
                 <p class="keyboard-hint">Use ← → arrows to navigate • ↑↓ arrows to flip</p>
-                
             </div>
         </div>
     </div>
@@ -482,22 +481,22 @@
             flashcard.classList.toggle('flipped', isFlipped);
         }
 
-        // Navigate to previous card
-        function previousCard() {
-            if (currentIndex > 0 && !isAnimating) {
-                animateTransition(() => {
-                    currentIndex--;
-                    updateCard();
-                });
-            }
-        }
-
         // Navigate to next card
         function nextCard() {
             const filteredCards = getFilteredCards();
             if (currentIndex < filteredCards.length - 1 && !isAnimating) {
                 animateTransition(() => {
                     currentIndex++;
+                    updateCard();
+                });
+            }
+        }
+
+        // Navigate to previous card
+        function previousCard() {
+            if (currentIndex > 0 && !isAnimating) {
+                animateTransition(() => {
+                    currentIndex--;
                     updateCard();
                 });
             }
@@ -575,8 +574,39 @@
 
         document.addEventListener('keydown', handleKeyPress);
 
+        // Touch support for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        flashcard.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        flashcard.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeDistance = touchEndX - touchStartX;
+            const minSwipeDistance = 50;
+
+            if (Math.abs(swipeDistance) > minSwipeDistance) {
+                if (swipeDistance > 0) {
+                    previousCard(); // Swipe right = previous
+                } else {
+                    nextCard(); // Swipe left = next
+                }
+            }
+        }
+
         // Initialize app
         updateCard();
+
+        // Debug logging
+        console.log('Zhuyin app initialized with', ZHUYIN_FLASHCARDS.length, 'cards');
+        console.log('Current filter:', currentFilter);
+        console.log('Filtered cards:', getFilteredCards().length);
 
         // Analytics (optional - replace with your tracking)
         if (typeof gtag !== 'undefined') {
@@ -586,14 +616,7 @@
             });
         }
 
-        // Service Worker for offline support (optional)
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => console.log('SW registered'))
-                    .catch(error => console.log('SW registration failed'));
-            });
-        }
+        // Service Worker removed - not needed for basic GitHub Pages setup
     </script>
 
     <!-- Schema.org structured data for SEO -->
@@ -613,7 +636,7 @@
         },
         "author": {
             "@type": "Person",
-            "name": "Your Name"
+            "name": "Henry Shaw"
         },
         "educationalLevel": "Beginner to Intermediate",
         "learningResourceType": "Interactive Tool",
@@ -621,7 +644,7 @@
         "about": {
             "@type": "Thing",
             "name": "Zhuyin Bopomofo",
-            "description": "Phonetic system for Mandarin Chinese used in Taiwan"
+            "description": "Phonetic system for Mandarin Chinese"
         }
     }
     </script>
